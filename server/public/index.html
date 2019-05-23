@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>
+            Document
+        </title>
+        <style>
+            #div1{
+            height:500px;
+            width:100%;
+            background-color: #1abc9c;
+            padding-top:20%;
+            color:white;
+            font-size:20px;
+            text-align:center;
+            }
+            #desc{
+            font-size:12px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="div1">
+            函数节流示例
+            <br/>
+            <span id="desc">
+                请在绿色区域连续点击鼠标左键或间隔2秒以上再次点击，并按F12查看控制台信息
+            </span>
+        </div>
+        <script>
+            //用于监听鼠标点击的区域的DOM对象
+            var oDiv = document.querySelector('#div1');
+
+            //被节流的函数
+            var callme = function(){
+                console.log('被节流的函数执行了一次');
+            }
+
+            //仿underscore语法临时定义节流函数
+            _ = {
+                throttle:function(func, wait, options){
+                    //记录上一次执行回调的时间
+                    var previous = new Date().getTime();
+                    return function(){
+                    //记录当前时间
+                    var now = new Date().getTime();
+                    //比较时间
+                    if (now - previous >= wait) {
+                        console.log('已经超出节流限制');
+                        //如果超出wait则执行
+                        func.apply();
+                    } else {
+                        console.log('距离上次触发仅经过了:' + (now-previous) + '毫秒,未触发被节流的函数');
+                    }
+                    previous = now;
+                    }
+                }
+            }
+
+            //绑定鼠标点击事件
+            oDiv.addEventListener('mousedown', _.throttle(callme,2000));
+        </script>
+    </body>
+</html>
